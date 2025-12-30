@@ -167,6 +167,8 @@ body::after {
     margin-bottom: calc(var(--spacing-unit) * 6);
 }
 
+
+
 .footer-logo {
     font-family: var(--font-display);
     font-size: 1.5rem;
@@ -373,6 +375,13 @@ body::after {
     color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
+}
+
+
+/* Service Content - Fix for fixed navbar */
+.service-content {
+    padding-top: 120px;
+    padding-bottom: calc(var(--spacing-unit) * 8);
 }
 
 /* Responsive Media Queries for Layout */
