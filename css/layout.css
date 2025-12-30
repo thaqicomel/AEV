@@ -1,0 +1,524 @@
+/* ===================================
+   Layout (Container, Hero, Footer, Geo Design)
+   =================================== */
+
+/* Geometric Corner Accents - Fixed to extend blue stripe */
+/* Geometric Corner Accents - Stripe Design */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 1000px;
+    height: 1000px;
+    /* Top Right: Green Corner -> Gap -> Blue Stripe */
+    /* Uses variables from css/variables.css for easy modification */
+    background: linear-gradient(225deg,
+            var(--accent-500) 0%,
+            var(--accent-500) var(--stop-1),
+            transparent var(--stop-1),
+            transparent var(--stop-2),
+            var(--primary-500) var(--stop-2),
+            var(--primary-500) var(--stop-3),
+            transparent var(--stop-3));
+    z-index: -1;
+    pointer-events: none;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 1000px;
+    height: 1000px;
+    /* Bottom Left: Green Corner -> Gap -> Blue Stripe */
+    background: linear-gradient(45deg,
+            var(--accent-500) 0%,
+            var(--accent-500) var(--stop-1),
+            transparent var(--stop-1),
+            transparent var(--stop-2),
+            var(--primary-500) var(--stop-2),
+            var(--primary-500) var(--stop-3),
+            transparent var(--stop-3));
+    z-index: -1;
+    pointer-events: none;
+}
+
+
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 calc(var(--spacing-unit) * 3);
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 80px;
+    overflow: hidden;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.gradient-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.08;
+    animation: float 20s infinite ease-in-out;
+}
+
+.orb-1 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--primary-500), transparent);
+    top: -200px;
+    left: -200px;
+    animation-delay: 0s;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, var(--primary-500), transparent);
+    top: 50%;
+    right: -150px;
+    animation-delay: -7s;
+}
+
+.orb-3 {
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, var(--primary-500), transparent);
+    bottom: -100px;
+    left: 30%;
+    animation-delay: -14s;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: calc(var(--spacing-unit) * 3);
+}
+
+.gradient-text {
+    color: var(--primary-500);
+    display: inline-block;
+    font-weight: 900;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 5);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 2);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: calc(var(--spacing-unit) * 8);
+}
+
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Footer */
+.footer {
+    background: var(--bg-secondary);
+    padding: calc(var(--spacing-unit) * 8) 0 calc(var(--spacing-unit) * 4);
+    border-top: 1px solid var(--border-color);
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: calc(var(--spacing-unit) * 4);
+    margin-bottom: calc(var(--spacing-unit) * 6);
+}
+
+.footer-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.footer-section p {
+    color: var(--text-secondary);
+}
+
+.footer-section h4 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.footer-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 1.5);
+}
+
+.footer-section a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-base);
+}
+
+.footer-section a:hover {
+    color: var(--primary-500);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: calc(var(--spacing-unit) * 4);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-tertiary);
+    flex-wrap: wrap;
+    gap: calc(var(--spacing-unit) * 2);
+}
+
+.footer-links {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 3);
+}
+
+/* Navigation */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(to right, var(--primary-500), var(--accent-500)) 1 stretch;
+    transition: all var(--transition-base);
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(var(--spacing-unit) * 2.5) 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform var(--transition-base);
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
+    mix-blend-mode: multiply;
+}
+
+.logo-text-group {
+    display: flex;
+    flex-direction: column;
+    margin-left: calc(var(--spacing-unit) * 2);
+}
+
+.logo-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.logo-subtitle {
+    font-size: 0.7rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+.logo-accent {
+    background: linear-gradient(135deg, var(--primary-500), var(--accent-500));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: calc(var(--spacing-unit) * 4);
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: color var(--transition-base);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-500);
+    transition: width var(--transition-base);
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.mobile-toggle span {
+    width: 25px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: all var(--transition-base);
+}
+
+/* Sections */
+.features,
+.testimonials,
+.about,
+.contact {
+    padding: calc(var(--spacing-unit) * 15) 0;
+}
+
+.features,
+.testimonials {
+    background: var(--bg-secondary);
+}
+
+.about,
+.contact {
+    background: var(--bg-primary);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: calc(var(--spacing-unit) * 8);
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+}
+
+.section-subtitle {
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive Media Queries for Layout */
+@media (max-width: 1024px) {
+    .container {
+        padding: 0 calc(var(--spacing-unit) * 4);
+        max-width: 100%;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        padding: calc(var(--spacing-unit) * 3);
+        box-shadow: var(--shadow-md);
+        gap: calc(var(--spacing-unit) * 3);
+        border-bottom: 1px solid var(--border-color);
+        z-index: 999;
+    }
+
+    .nav-links.active {
+        display: flex;
+        animation: slideDown 0.3s ease-out forwards;
+    }
+
+    .mobile-toggle {
+        display: flex;
+    }
+
+    .mobile-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    .hero-title {
+        font-size: 3rem;
+        line-height: 1.2;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .features-grid,
+    .testimonials-grid,
+    .about-content,
+    .contact-content {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: calc(var(--spacing-unit) * 3);
+    }
+
+    .contact-content {
+        gap: calc(var(--spacing-unit) * 5);
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .logo img {
+        height: 40px;
+    }
+
+    .logo-title {
+        font-size: 0.95rem;
+    }
+
+    .logo-subtitle {
+        font-size: 0.65rem;
+    }
+
+    /* Reduce geometric accents on mobile */
+    body::before,
+    body::after {
+        width: 500px;
+        height: 500px;
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 0 calc(var(--spacing-unit) * 2);
+    }
+
+    .hero-title {
+        font-size: 2.25rem;
+        line-height: 1.2;
+    }
+
+    .hero-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+    }
+
+    .logo img {
+        height: 35px;
+    }
+
+    .logo-text-group {
+        margin-left: calc(var(--spacing-unit) * 1.5);
+    }
+
+    .logo-title {
+        font-size: 0.85rem;
+    }
+
+    .logo-subtitle {
+        display: none;
+    }
+
+    /* Further reduce geometric accents on small mobile */
+    body::before,
+    body::after {
+        width: 350px;
+        height: 350px;
+        opacity: 0.3;
+    }
+}
