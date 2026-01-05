@@ -1,11 +1,12 @@
-# Deployment Guide: DigitalOcean + GoDaddy
+# Deployment Guide: DigitalOcean + GoDaddy (GitHub Workflow)
 
-This guide will walk you through hosting your static website on a DigitalOcean Droplet and connecting it to your GoDaddy domain.
+This guide will walk you through hosting your static website on a DigitalOcean Droplet using **GitHub** and connecting it to your GoDaddy domain.
 
 ## Prerequisites
 - A **DigitalOcean** account.
 - A **GoDaddy** account with your domain purchased.
-- Terminal/Command Line access on your local computer.
+- Your code pushed to a **GitHub repository**.
+- Terminal/Command Line access.
 
 ---
 
@@ -15,12 +16,12 @@ This guide will walk you through hosting your static website on a DigitalOcean D
 2.  Click **Create** -> **Droplets**.
 3.  **Choose Region**: Select a datacenter closest to your target audience (e.g., Singapore, San Francisco, London).
 4.  **Choose Image**: Select **Ubuntu 24.04 (LTS) x64** (or the latest LTS version).
-5.  **Choose Size**: Select **Basic**, then **Regular Disk Type**. The cheapest option ($4-6/month) is plenty for a static site.
+5.  **Choose Size**: Select **Basic**, then **Regular Disk Type**. The cheapest option ($4-6/month) is plenty.
 6.  **Authentication Method**:
     *   **SSH Key (Recommended)**: If you have one, select it.
     *   **Password**: Create a strong root password.
 7.  **Finalize**: Give your droplet a name (e.g., `aev-website`) and click **Create Droplet**.
-8.  **Wait**: In a minute, you will get an **IP Address** (e.g., `123.45.67.89`). Copy this.
+8.  **Wait**: In a minute, you will get an **IP Address** (this is your **Public IP**, e.g., `123.45.67.89`). Copy this. (Ignore the "Private IP").
 
 ---
 
@@ -40,64 +41,70 @@ This guide will walk you through hosting your static website on a DigitalOcean D
     *   **Value**: `@` (or your domain name)
     *   **TTL**: Default
 
-*Note: DNS changes can take a few minutes to 48 hours to propagate, but usually it's quick.*
+*Note: DNS changes can take a few minutes to 48 hours to propagate.*
 
 ---
 
-## Step 3: Server Setup (Nginx)
+## Step 3: Server Setup
 
 Open your local terminal and SSH into your new server:
 ```bash
 ssh root@YOUR_DROPLET_IP
+# Make sure to use the PUBLIC IP (e.g., 143.198.xxx.xxx), NOT the Private IP (10.104.xxx.xxx).
 # If using password, it will ask for it now.
+# If "Permission denied (publickey)": You likely chose SSH Key but don't have the corresponding key on this computer.
+# You may need to "Reset Password" in the DigitalOcean dashboard -> Access to switch to password login.
 ```
 
-Once logged in, run these commands to update the system and install Nginx:
+Once logged in, run these commands to update the system and install **Nginx** and **Git**:
 
 ```bash
 apt update
-apt install nginx -y
+apt install nginx git -y
 ufw allow 'Nginx Full'
 ```
 
-Verify Nginx is running:
-1.  Open your browser and visit `http://YOUR_DROPLET_IP`.
-2.  You should see the "Welcome to nginx!" page.
+Verify Nginx is running by visiting `http://YOUR_DROPLET_IP` in your browser.
 
 ---
 
-## Step 4: Upload Your Website
+## Step 4: Clone Your Repository
 
-Back on your **local computer** (open a new terminal window), navigate to your project folder:
+We will clone your code into `/var/www/aevlanding`.
 
-```bash
-cd /Users/thaqiyuddin/Personal/thaqi/Project/aevlanding
-```
+1.  Go to the `/var/www` directory:
+    ```bash
+    cd /var/www
+    ```
 
-Use `scp` (Secure Copy) to upload your files to the server. We'll put them in `/var/www/aevlanding`.
+2.  Clone your repository:
+    
+    *If your repository is **Public**:*
+    ```bash
+    git clone https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git aevlanding
+    ```
+    
+    *If your repository is **Private**:*
+    You will need to use a Personal Access Token (PAT) or generate an SSH key on the server (`ssh-keygen`), add the public key to your GitHub repo's "Deploy Keys", and then clone using SSH:
+    ```bash
+    git clone git@github.com:YOUR_USERNAME/YOUR_REPO_NAME.git aevlanding
+    ```
 
-```bash
-# Create the directory on the server first
-ssh root@YOUR_DROPLET_IP "mkdir -p /var/www/aevlanding"
-
-# Upload all files
-scp -r * root@YOUR_DROPLET_IP:/var/www/aevlanding
-```
-
-*Note: Enter your server password if prompted.*
+3.  Verify the files are there:
+    ```bash
+    ls /var/www/aevlanding
+    ```
 
 ---
 
 ## Step 5: Configure Nginx
 
-1.  SSH back into your server: `ssh root@YOUR_DROPLET_IP`
-2.  Copy the provided config or create a new one. We will create a new config file for your site.
-
+1.  Create a new config file for your site:
     ```bash
     nano /etc/nginx/sites-available/aevlanding
     ```
 
-3.  Paste the following configuration (Modifying `server_name` to match your domain):
+2.  Paste the following configuration (Modifying `server_name` to match your domain):
 
     ```nginx
     server {
@@ -121,31 +128,25 @@ scp -r * root@YOUR_DROPLET_IP:/var/www/aevlanding
     }
     ```
 
-4.  Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X`).
+3.  Save and exit (`Ctrl+O`, `Enter`, `Ctrl+X`).
 
-5.  Enable the site:
+4.  Enable the site and remove the default config:
     ```bash
     ln -s /etc/nginx/sites-available/aevlanding /etc/nginx/sites-enabled/
+    rm /etc/nginx/sites-enabled/default  # IMPORTANT: Remove default to avoid conflicts
     ```
 
-6.  Test the configuration:
+5.  Test and restart Nginx:
     ```bash
     nginx -t
-    ```
-    *If successful, it will say "syntax is ok".*
-
-7.  Restart Nginx:
-    ```bash
     systemctl restart nginx
     ```
 
-**At this point, your site should be live at `http://yourdomain.com`!**
+**Your site should now be live at `http://yourdomain.com`!**
 
 ---
 
-## Step 6: Secure with SSL (HTTPS) - Optional but Recommended
-
-We will use Certbot (Let's Encrypt) for free SSL.
+## Step 6: Secure with SSL (HTTPS)
 
 1.  Install Certbot:
     ```bash
@@ -156,18 +157,22 @@ We will use Certbot (Let's Encrypt) for free SSL.
     ```bash
     certbot --nginx -d yourdomain.com -d www.yourdomain.com
     ```
-    *Follow the prompts (enter email, agree to terms). Select option "2" to redirect HTTP to HTTPS if asked.*
-
-Your site is now secure! `https://yourdomain.com`
 
 ---
 
 ## Updating Your Site in the Future
 
-Whenever you make changes locally:
+When you push changes to GitHub from your computer, update the server like this:
 
-1.  Run the upload command again:
+1.  SSH into your server:
     ```bash
-    scp -r * root@YOUR_DROPLET_IP:/var/www/aevlanding
+    ssh root@YOUR_DROPLET_IP
     ```
-2.  That's it! (No need to restart Nginx for simple HTML/CSS changes).
+
+2.  Go to your project folder and pull the changes:
+    ```bash
+    cd /var/www/aevlanding
+    git pull
+    ```
+
+That's it! Your site is updated immediately.
