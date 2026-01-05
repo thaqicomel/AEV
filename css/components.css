@@ -119,7 +119,7 @@
 /* Feature Cards */
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: calc(var(--spacing-unit) * 3);
 }
 
@@ -491,6 +491,7 @@
             #f8fbff 50%,
             #f9fcf9 100%);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     z-index: 9999;
@@ -787,8 +788,240 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    transform: scale(1.05);
+}
+
+/* Carousel Styles */
+.carousel-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+
+
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+}
+
+.carousel-container.mini {
+    height: 200px;
+    margin-top: 1rem;
+}
+
+.carousel-track-container {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-track {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: relative;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Override absolute positioning for transform-based sliding if generic script uses standard sliding */
+/* Actually, the script.js uses transforms on the track, which assumes slides are side-by-side or stacked? */
+/* Let's look at script.js: setSlidePosition puts them at left: index * width. So they need absolute positioning BUT the track moves. */
+/* Wait, the script says: slide.style.left = slideWidth * index + 'px'; */
+/* So yes, absolute positioning is required for the slides within the track. */
+
+.carousel-slide.active {
+    opacity: 1;
+}
+
+.carousel-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #f8fbff;
+    /* Neutral background for containment */
+}
+
+/* Hover Description Styles */
+.sub-service-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-desc {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0, 114, 188, 0.9);
+    color: white;
+    font-size: 0.9rem;
+    text-align: center;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* Smooth butter curve */
+    z-index: 20;
+    backdrop-filter: blur(4px);
+}
+
+.sub-service-card:hover .hover-desc {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Carousel Nav Styles */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.carousel-nav:hover {
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-nav.prev {
+    left: 20px;
+}
+
+.carousel-nav.next {
+    right: 20px;
+}
+
+.carousel-nav svg {
+    width: 24px;
+    height: 24px;
+    color: var(--primary-500);
+}
+
+.carousel-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+
+.indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.indicator.active {
+    background: white;
+    transform: scale(1.2);
 }
 
 .gallery-card:hover img {
     transform: scale(1.05);
+}
+
+/* WhatsApp Button */
+.whatsapp-float {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    bottom: 40px;
+    right: 40px;
+    background-color: #25d366;
+    color: #FFF;
+    border-radius: 50px;
+    text-align: center;
+    font-size: 30px;
+    box-shadow: 2px 2px 3px #999;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.whatsapp-float:hover {
+    transform: scale(1.1);
+    background-color: #128C7E;
+    box-shadow: 2px 2px 10px #666;
+}
+
+.whatsapp-float svg {
+    width: 35px;
+    height: 35px;
+    fill: currentColor;
+}
+
+/* Logo Marquee */
+.logo-marquee {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.marquee-content {
+    display: flex;
+    gap: 40px;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+}
+
+.logo-marquee.reverse .marquee-content {
+    animation: marquee-reverse 30s linear infinite;
+    /* Starting position is handled by the animation keyframes 0% */
+}
+
+.logo-marquee-container {
+    width: 100vw;
+    margin-left: max(-50vw, calc((100% - 100vw) / 2));
+    margin-right: max(-50vw, calc((100% - 100vw) / 2));
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+}
+
+.marquee-content:hover {
+    animation-play-state: paused;
+}
+
+.marquee-content img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    filter: grayscale(100%) opacity(0.7);
+    transition: all 0.3s ease;
+}
+
+.marquee-content img:hover {
+    filter: grayscale(0%) opacity(1);
+    transform: scale(1.1);
 }
