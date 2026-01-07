@@ -451,13 +451,6 @@ body::after {
         align-items: stretch;
     }
 
-    .features-grid,
-    .testimonials-grid,
-    .about-content,
-    .contact-content {
-        grid-template-columns: 1fr;
-    }
-
     .footer-bottom {
         flex-direction: column;
         text-align: center;

@@ -3,7 +3,7 @@
 // ===================================
 function handleLoadingScreen() {
     const loadingScreen = document.getElementById('loading-screen');
-    
+
     // Animate brand name letters if they exist
     const brandName = document.querySelector('.loading-brand');
     if (brandName && !brandName.querySelector('span')) {
@@ -48,8 +48,8 @@ function animateOnScroll() {
 
     elements.forEach(element => {
         // Default to fade-up if no specific animation class is present
-        if (!element.classList.contains('fade-left') && 
-            !element.classList.contains('fade-right') && 
+        if (!element.classList.contains('fade-left') &&
+            !element.classList.contains('fade-right') &&
             !element.classList.contains('scale-in')) {
             element.classList.add('fade-up');
         }
@@ -62,7 +62,7 @@ function animateOnScroll() {
 // ===================================
 function setupCarousel() {
     const carousels = document.querySelectorAll('.carousel-container');
-    
+
     carousels.forEach(container => {
         const track = container.querySelector('.carousel-track');
         if (!track) return;
@@ -71,7 +71,7 @@ function setupCarousel() {
         const nextButton = container.querySelector('.carousel-nav.next');
         const prevButton = container.querySelector('.carousel-nav.prev');
         const indicatorsContainer = container.querySelector('.carousel-indicators');
-        
+
         let slideWidth = slides[0].getBoundingClientRect().width;
         let currentSlideIndex = 0;
         let autoplayInterval;
@@ -82,7 +82,7 @@ function setupCarousel() {
         };
         // We actually want them relative in flex, so we might not need absolute positioning logic
         // But for a sliding track, we usually move the track. Let's stick to track translation.
-        
+
         const updateSlideWidth = () => {
             slideWidth = slides[0].getBoundingClientRect().width;
             moveToSlide(currentSlideIndex);
@@ -91,11 +91,11 @@ function setupCarousel() {
         const moveToSlide = (index) => {
             track.style.transform = 'translateX(-' + (slideWidth * index) + 'px)';
             currentSlideIndex = index;
-            
+
             // Update active classes
             slides.forEach(slide => slide.classList.remove('active'));
             slides[index].classList.add('active');
-            
+
             updateIndicators(index);
         };
 
@@ -158,7 +158,7 @@ function setupCarousel() {
         window.addEventListener('resize', updateSlideWidth);
         slides[0].classList.add('active');
         startAutoplay();
-        
+
         // Pause on hover
         container.addEventListener('mouseenter', stopAutoplay);
         container.addEventListener('mouseleave', startAutoplay);
@@ -170,7 +170,7 @@ function setupCarousel() {
 // ===================================
 function handleNavbarScroll() {
     const navbar = document.getElementById('navbar');
-    
+
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
@@ -185,7 +185,7 @@ function handleNavbarScroll() {
 // ===================================
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -193,7 +193,7 @@ function animateCounters() {
                 const duration = 2000;
                 const increment = target / (duration / 16);
                 let current = 0;
-                
+
                 const updateCounter = () => {
                     current += increment;
                     if (current < target) {
@@ -203,7 +203,7 @@ function animateCounters() {
                         // Formatting logic preserved
                         const parent = entry.target.closest('.stat-item');
                         const label = parent ? parent.querySelector('.stat-label').textContent : '';
-                        
+
                         if (label.includes('Satisfaction')) {
                             entry.target.textContent = target + '%';
                         } else if (label.includes('Support')) {
@@ -213,13 +213,13 @@ function animateCounters() {
                         }
                     }
                 };
-                
+
                 updateCounter();
                 observer.unobserve(entry.target);
             }
         });
     }, { threshold: 0.5 });
-    
+
     counters.forEach(counter => observer.observe(counter));
 }
 
@@ -229,7 +229,7 @@ function animateCounters() {
 function setupMobileMenu() {
     const mobileToggle = document.getElementById('mobile-toggle');
     const navLinks = document.querySelector('.nav-links');
-    
+
     if (mobileToggle && navLinks) {
         mobileToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
@@ -253,11 +253,11 @@ function setupSmoothScroll() {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            
+
             if (target) {
                 const navbarHeight = document.getElementById('navbar').offsetHeight;
                 const targetPosition = target.offsetTop - navbarHeight;
-                
+
                 window.scrollTo({
                     top: targetPosition,
                     behavior: 'smooth'
@@ -278,7 +278,7 @@ function setupContactForm() {
         e.preventDefault();
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
-        
+
         alert(`Thank you ${name}! We'll get back to you at ${email} soon.`);
         form.reset();
     });
@@ -289,16 +289,16 @@ function setupContactForm() {
 // ===================================
 function setupParallax() {
     const orbs = document.querySelectorAll('.gradient-orb');
-    
+
     window.addEventListener('mousemove', (e) => {
         const mouseX = e.clientX / window.innerWidth;
         const mouseY = e.clientY / window.innerHeight;
-        
+
         orbs.forEach((orb, index) => {
             const speed = (index + 1) * 20;
             const x = (mouseX - 0.5) * speed;
             const y = (mouseY - 0.5) * speed;
-            
+
             orb.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
         });
     });
@@ -309,22 +309,24 @@ function setupParallax() {
 // ===================================
 function setupCardTilt() {
     const cards = document.querySelectorAll('.feature-card, .testimonial-card');
-    
+
     cards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
+            if (window.innerWidth <= 768) return; // Disable on mobile to prevent overflow/cut-off
+
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
+
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            
+
             const rotateX = (y - centerY) / 20;
             const rotateY = (centerX - x) / 20;
-            
+
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
         });
-        
+
         card.addEventListener('mouseleave', () => {
             card.style.transform = '';
         });
@@ -336,20 +338,20 @@ function setupCardTilt() {
 // ===================================
 function setupRippleEffect() {
     const buttons = document.querySelectorAll('.btn, .cta-button');
-    
+
     buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
+        button.addEventListener('click', function (e) {
             const ripple = document.createElement('span');
             const rect = this.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size/2;
-            const y = e.clientY - rect.top - size/2;
-            
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
             ripple.style.width = ripple.style.height = size + 'px';
             ripple.style.left = x + 'px';
             ripple.style.top = y + 'px';
             ripple.classList.add('ripple');
-            
+
             // Add ripple styles logic if not present (handled better in CSS usually, but preserving logic)
             if (!document.getElementById('ripple-styles')) {
                 const style = document.createElement('style');
@@ -370,7 +372,7 @@ function setupRippleEffect() {
                 `;
                 document.head.appendChild(style);
             }
-            
+
             this.appendChild(ripple);
             setTimeout(() => ripple.remove(), 600);
         });

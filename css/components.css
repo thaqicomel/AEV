@@ -132,6 +132,7 @@
     backdrop-filter: blur(10px);
     transition: all var(--transition-base);
     cursor: pointer;
+    max-width: 100%;
 }
 
 .feature-card:nth-child(even) {
@@ -1024,4 +1025,15 @@
 .marquee-content img:hover {
     filter: grayscale(0%) opacity(1);
     transform: scale(1.1);
+}
+
+/* Responsive Overrides (Moved from layout.css to fix cascade) */
+@media (max-width: 768px) {
+
+    .features-grid,
+    .testimonials-grid,
+    .about-content,
+    .contact-content {
+        grid-template-columns: 1fr;
+    }
 }
