@@ -4,32 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Management - Arena Empire Ventures</title>
+    <title>Facilities Management - Arena Empire Ventures</title>
     <meta name="description"
-        content="Professional property management and support services for residential and commercial properties">
-    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+        content="Comprehensive facility maintenance and management services to keep your operations running smoothly">
+    <link rel="icon" type="image/jpeg" href="/static/images/logo.jpeg">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://arenaempireventures.com/property-management.html">
-    <meta property="og:title" content="Property Management - Arena Empire Ventures">
+    <meta property="og:url" content="https://arenaempireventures.com/facilities-management.html">
+    <meta property="og:title" content="Facilities Management - Arena Empire Ventures">
     <meta property="og:description"
-        content="Professional property management and support services for residential and commercial properties.">
+        content="Comprehensive facility maintenance and management services to keep your operations running smoothly.">
     <meta property="og:image" content="images/logo.jpeg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://arenaempireventures.com/property-management.html">
-    <meta property="twitter:title" content="Property Management - Arena Empire Ventures">
+    <meta property="twitter:url" content="https://arenaempireventures.com/facilities-management.html">
+    <meta property="twitter:title" content="Facilities Management - Arena Empire Ventures">
     <meta property="twitter:description"
-        content="Professional property management and support services for residential and commercial properties.">
+        content="Comprehensive facility maintenance and management services to keep your operations running smoothly.">
     <meta property="twitter:image" content="images/logo.jpeg">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
+    <style>
+        /* Specific page overrides if any needed */
+    </style>
 </head>
 
 <body>
@@ -38,7 +41,7 @@
         <div class="container">
             <div class="nav-content">
                 <a href="index.html" class="logo">
-                    <img src="images/logo.jpeg" alt="Arena Empire Ventures">
+                    <img src="/static/images/logo.jpeg" alt="Arena Empire Ventures">
                     <div class="logo-text-group">
                         <span class="logo-title">Arena Empire Ventures</span>
                         <span class="logo-subtitle">201903023787 (SA0505506-A)</span>
@@ -59,44 +62,46 @@
             </a>
 
             <div class="service-header">
-                <h1 class="gradient-text">Property Management</h1>
+                <h1 class="gradient-text">Facilities Management</h1>
                 <p class="service-description">
-                    Arena Empire Ventures manages both commercial and residential
-                    properties with a focus on operational efficiency and tenant
-                    satisfaction. Our services encompass rent collection, tenant
-                    relations, day-to-day facility oversight, and proactive property
-                    upkeep, ensuring owners and tenants enjoy a seamless
-                    experience.
+                    We offer comprehensive facility maintenance solutions that
+                    include electrical systems servicing, plumbing repairs, and general
+                    building maintenance. Our skilled and certified personnel ensure
+                    that all facilities meet regulatory standards, safety requirements,
+                    and operational excellence.
                 </p>
             </div>
 
             <!-- Image Slideshow -->
-            <!-- Image Grid (16 items) -->
+            <!-- Image Grid (Dynamic from Database) -->
+            {% if gallery_images %}
             <div class="gallery-grid animate-on-scroll fade-up">
-                <!-- Row 1 -->
-                <div class="gallery-card"><img src="images/property/image1.png" alt="Property Management 1"></div>
-                <div class="gallery-card"><img src="images/property/image2.png" alt="Property Management 2"></div>
-                <div class="gallery-card"><img src="images/property/image3.png" alt="Property Management 3"></div>
-                <div class="gallery-card"><img src="images/property/image4.png" alt="Property Management 4"></div>
-
-                <!-- Row 2 -->
-                <div class="gallery-card"><img src="images/property/image2.png" alt="Property Management 5"></div>
-                <div class="gallery-card"><img src="images/property/image3.png" alt="Property Management 6"></div>
-                <div class="gallery-card"><img src="images/property/image4.png" alt="Property Management 7"></div>
-                <div class="gallery-card"><img src="images/property/image1.png" alt="Property Management 8"></div>
-
-                <!-- Row 3 -->
-                <div class="gallery-card"><img src="images/property/image3.png" alt="Property Management 9"></div>
-                <div class="gallery-card"><img src="images/property/image4.png" alt="Property Management 10"></div>
-                <div class="gallery-card"><img src="images/property/image1.png" alt="Property Management 11"></div>
-                <div class="gallery-card"><img src="images/property/image2.png" alt="Property Management 12"></div>
-
-                <!-- Row 4 -->
-                <div class="gallery-card"><img src="images/property/image4.png" alt="Property Management 13"></div>
-                <div class="gallery-card"><img src="images/property/image1.png" alt="Property Management 14"></div>
-                <div class="gallery-card"><img src="images/property/image2.png" alt="Property Management 15"></div>
-                <div class="gallery-card"><img src="images/property/image3.png" alt="Property Management 16"></div>
+                {% for image in gallery_images %}
+                <div class="gallery-card">
+                    <img src="{{ image.image_path }}" alt="{{ image.title or 'Facilities Management' }}">
+                    {% if image.title or image.description %}
+                    <div class="gallery-overlay">
+                        {% if image.title %}<h4>{{ image.title }}</h4>{% endif %}
+                        {% if image.description %}<p>{{ image.description }}</p>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
             </div>
+            {% else %}
+            <!-- Fallback to placeholder images if no database images -->
+            <div class="gallery-grid animate-on-scroll fade-up">
+                <div class="gallery-card"><img src="/static/images/property/image1.png" alt="Facility Management">
+                </div>
+                <div class="gallery-card"><img src="/static/images/property/image3.png" alt="Facility Management">
+                </div>
+                <div class="gallery-card"><img src="/static/images/property/image4.png" alt="Facility Management">
+                </div>
+                <div class="gallery-card"><img src="/static/images/property/image2.png" alt="Facility Management">
+                </div>
+            </div>
+            {% endif %}
+
 
         </div>
     </section>
@@ -108,7 +113,7 @@
         </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
     <script>
         // Additional page-specific initialization if needed
         document.addEventListener('DOMContentLoaded', () => {

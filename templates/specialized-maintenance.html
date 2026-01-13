@@ -7,7 +7,7 @@
     <title>Specialized Maintenance - Arena Empire Ventures</title>
     <meta name="description"
         content="Expert maintenance solutions tailored to meet your specific industry requirements">
-    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <link rel="icon" type="image/jpeg" href="/static/images/logo.jpeg">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arenaempireventures.com/specialized-maintenance.html">
@@ -24,7 +24,7 @@
         content="Expert maintenance solutions tailored to meet your specific industry requirements including cleaning and technical maintenance.">
     <meta property="twitter:image" content="images/logo.jpeg">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -41,7 +41,7 @@
         <div class="container">
             <div class="nav-content">
                 <a href="index.html" class="logo">
-                    <img src="images/logo.jpeg" alt="Arena Empire Ventures">
+                    <img src="/static/images/logo.jpeg" alt="Arena Empire Ventures">
                     <div class="logo-text-group">
                         <span class="logo-title">Arena Empire Ventures</span>
                         <span class="logo-subtitle">201903023787 (SA0505506-A)</span>
@@ -75,6 +75,21 @@
 
             <!-- Image Slideshow -->
             <!-- Sub-Services Grid -->
+            {% if gallery_images %}
+            <div class="gallery-grid animate-on-scroll fade-up">
+                {% for image in gallery_images %}
+                <div class="gallery-card">
+                    <img src="{{ image.image_path }}" alt="Gallery Image">
+                    {% if image.title or image.description %}
+                    <div class="gallery-overlay">
+                        {% if image.title %}<h4>{{ image.title }}</h4>{% endif %}
+                        {% if image.description %}<p>{{ image.description }}</p>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
             <div class="sub-services-grid animate-on-scroll fade-up">
                 <!-- Helper to generate carousel structure -->
                 <!-- We will repeat this structure for all 21 items -->
@@ -86,11 +101,24 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Warehouse">
+                                {% set warehouse_images = subsection_images.get('warehouse-management', []) %}
+                                {% if warehouse_images %}
+                                {% for img in warehouse_images %}
+                                <li class="carousel-slide {% if loop.first %}active{% endif %}">
+                                    <img src="{{ img.image_path }}" alt="{{ img.title or 'Warehouse' }}">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Warehouse"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Warehouse"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Warehouse"></li>
+                                {% endfor %}
+                                {% else %}
+                                <!-- Fallback to placeholder images if no database images -->
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Warehouse"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png"
+                                        alt="Warehouse"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png"
+                                        alt="Warehouse"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png"
+                                        alt="Warehouse"></li>
+                                {% endif %}
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -112,10 +140,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image2.png" alt="Bund"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Bund"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Bund"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Bund"></li>
+                                <li class="carousel-slide active"><img src="/static/images/property/image2.png"
+                                        alt="Bund"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Bund">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Bund">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Bund">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -137,11 +169,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image3.png" alt="Waste">
+                                <li class="carousel-slide active"><img src="/static/images/property/image3.png"
+                                        alt="Waste">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Waste"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Waste"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Waste"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Waste">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Waste">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Waste">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -164,10 +200,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image4.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Tree"></li>
+                                <li class="carousel-slide active"><img src="/static/images/property/image4.png"
+                                        alt="Tree"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Tree">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Tree">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Tree">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -189,11 +229,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Repair">
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Repair">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Repair"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Repair"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Repair"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Repair">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Repair">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Repair">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -215,11 +259,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image2.png" alt="Drain">
+                                <li class="carousel-slide active"><img src="/static/images/property/image2.png"
+                                        alt="Drain">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Drain"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Drain"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Drain"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Drain">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Drain">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Drain">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -241,11 +289,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image3.png" alt="Pipes">
+                                <li class="carousel-slide active"><img src="/static/images/property/image3.png"
+                                        alt="Pipes">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Pipes"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Pipes"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Pipes"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Pipes">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Pipes">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Pipes">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -267,11 +319,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image4.png" alt="Pathway">
+                                <li class="carousel-slide active"><img src="/static/images/property/image4.png"
+                                        alt="Pathway">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Pathway"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Pathway"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Pathway"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Pathway">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Pathway">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Pathway">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -293,11 +349,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Painting">
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Painting">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Painting"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Painting"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Painting"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Painting">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Painting">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Painting">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -319,11 +379,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image2.png"
+                                <li class="carousel-slide active"><img src="/static/images/property/image2.png"
                                         alt="Playground"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Playground"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Playground"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Playground"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png"
+                                        alt="Playground"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png"
+                                        alt="Playground"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png"
+                                        alt="Playground"></li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -345,11 +408,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image3.png" alt="Drainage">
+                                <li class="carousel-slide active"><img src="/static/images/property/image3.png"
+                                        alt="Drainage">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Drainage"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Drainage"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Drainage"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Drainage">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Drainage">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Drainage">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -371,11 +438,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image4.png"
+                                <li class="carousel-slide active"><img src="/static/images/property/image4.png"
                                         alt="Inspection"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Inspection"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Inspection"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Inspection"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png"
+                                        alt="Inspection"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png"
+                                        alt="Inspection"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png"
+                                        alt="Inspection"></li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -397,11 +467,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Signage">
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Signage">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Signage"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Signage"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Signage"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Signage">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Signage">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Signage">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -423,11 +497,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image2.png" alt="Banner">
+                                <li class="carousel-slide active"><img src="/static/images/property/image2.png"
+                                        alt="Banner">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Banner"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Banner"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Banner"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Banner">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Banner">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Banner">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -449,10 +527,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image3.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Tree"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Tree"></li>
+                                <li class="carousel-slide active"><img src="/static/images/property/image3.png"
+                                        alt="Tree"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Tree">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Tree">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Tree">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -474,10 +556,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image4.png" alt="Trap"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Trap"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Trap"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Trap"></li>
+                                <li class="carousel-slide active"><img src="/static/images/property/image4.png"
+                                        alt="Trap"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Trap">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Trap">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Trap">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -499,11 +585,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Solar">
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Solar">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Solar"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Solar"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Solar"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Solar">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Solar">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Solar">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -525,11 +615,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image2.png" alt="Debris">
+                                <li class="carousel-slide active"><img src="/static/images/property/image2.png"
+                                        alt="Debris">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Debris"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Debris"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Debris"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Debris">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Debris">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Debris">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -551,11 +645,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image3.png" alt="Lagoon">
+                                <li class="carousel-slide active"><img src="/static/images/property/image3.png"
+                                        alt="Lagoon">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Lagoon"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Lagoon"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Lagoon"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Lagoon">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Lagoon">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Lagoon">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -577,10 +675,14 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image4.png" alt="Wall"></li>
-                                <li class="carousel-slide"><img src="images/property/image1.png" alt="Wall"></li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Wall"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Wall"></li>
+                                <li class="carousel-slide active"><img src="/static/images/property/image4.png"
+                                        alt="Wall"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image1.png" alt="Wall">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Wall">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Wall">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -602,11 +704,15 @@
                     <div class="carousel-container mini">
                         <div class="carousel-track-container">
                             <ul class="carousel-track">
-                                <li class="carousel-slide active"><img src="images/property/image1.png" alt="Event">
+                                <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                        alt="Event">
                                 </li>
-                                <li class="carousel-slide"><img src="images/property/image2.png" alt="Event"></li>
-                                <li class="carousel-slide"><img src="images/property/image3.png" alt="Event"></li>
-                                <li class="carousel-slide"><img src="images/property/image4.png" alt="Event"></li>
+                                <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Event">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Event">
+                                </li>
+                                <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Event">
+                                </li>
                             </ul>
                         </div>
                         <button class="carousel-nav prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -621,6 +727,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
 
 
         </div>
@@ -633,7 +740,7 @@
         </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
     <script>
         // Additional page-specific initialization if needed
         document.addEventListener('DOMContentLoaded', () => {

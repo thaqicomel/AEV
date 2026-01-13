@@ -7,14 +7,14 @@
     <title>Arena Empire Ventures - Property & Facility Management</title>
     <meta name="description"
         content="Arena Empire Ventures - Delivering high-quality property and facility maintenance and management services across Malaysia">
-    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <link rel="icon" type="image/jpeg" href="/static/images/logo.jpeg">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://arenaempireventures.com/">
     <meta property="og:title" content="Arena Empire Ventures - Property & Facility Management">
     <meta property="og:description"
         content="Arena Empire Ventures - Delivering high-quality property and facility maintenance and management services across Malaysia.">
-    <meta property="og:image" content="images/logo.jpeg">
+    <meta property="og:image" content="/static/images/logo.jpeg">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
@@ -22,9 +22,9 @@
     <meta property="twitter:title" content="Arena Empire Ventures - Property & Facility Management">
     <meta property="twitter:description"
         content="Arena Empire Ventures - Delivering high-quality property and facility maintenance and management services across Malaysia.">
-    <meta property="twitter:image" content="images/logo.jpeg">
+    <meta property="twitter:image" content="/static/images/logo.jpeg">
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -53,7 +53,7 @@
         <div class="container">
             <div class="nav-content">
                 <a href="#" class="logo">
-                    <img src="images/logo.jpeg" alt="Arena Empire Ventures">
+                    <img src="/static/images/logo.jpeg" alt="Arena Empire Ventures">
                     <div class="logo-text-group">
                         <span class="logo-title">Arena Empire Ventures (M) Sdn Bhd</span>
                         <span class="logo-subtitle">202501054727 (1656133-X)</span>
@@ -87,11 +87,10 @@
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title animate-on-scroll">
-                    <span class="gradient-text">Arena Empire Ventures</span>
+                    <span class="gradient-text">{{ content.hero_title }}</span>
                 </h1>
                 <p class="hero-subtitle animate-on-scroll">
-                    Your trusted 100% Bumiputera partner for comprehensive property and facility maintenance solutions
-                    across Malaysia.
+                    {{ content.hero_subtitle }}
                 </p>
                 <div class="hero-buttons animate-on-scroll">
                     <a href="#contact" class="btn btn-primary"
@@ -226,23 +225,13 @@
                 <div class="about-text animate-on-scroll">
                     <h3>Our Commitment</h3>
                     <p>
-                        As the facilities and property management industry continues to evolve in Malaysia, Arena Empire
-                        Ventures remains committed to growth, innovation, and service excellence. Backed by a dedicated
-                        and professional workforce, we are constantly exploring new opportunities while maintaining the
-                        highest standards in all areas of our business.
-                    </p>
-                    <p>
-                        We are ready to compete, contribute, and lead in providing dependable services and solutions
-                        that support the development of businesses and communities nationwide.
+                        {{ content.our_commitment | replace('\n', '<br>') | safe }}
                     </p>
                 </div>
                 <div class="about-text animate-on-scroll">
                     <h3>Our Mission</h3>
                     <p>
-                        Our mission at Arena Empire Ventures is to deliver exceptional maintenance and management
-                        services that empower businesses to operate efficiently, reduce costs, and focus on their core
-                        operations — all while upholding the highest standards of quality, reliability, and
-                        professionalism.
+                        {{ content.our_mission }}
                     </p>
                 </div>
             </div>
@@ -262,55 +251,57 @@
                 <div class="logo-marquee">
                     <div class="marquee-content">
                         <!-- DRB Hicom -->
-                        <img src="images/logos/drb_hicom.png" alt="DRB Hicom Property" title="DRB Hicom Property">
+                        <img src="/static/images/logos/drb_hicom.png" alt="DRB Hicom Property"
+                            title="DRB Hicom Property">
                         <!-- Glenmarie Cove -->
-                        <img src="images/logos/glenmarie_cove.png" alt="Glenmarie Cove Residentials"
+                        <img src="/static/images/logos/glenmarie_cove.png" alt="Glenmarie Cove Residentials"
                             title="Glenmarie Cove Residentials">
                         <!-- Eco World -->
-                        <img src="images/logos/eco_world.png" alt="Eco World" title="Eco World">
+                        <img src="/static/images/logos/eco_world.png" alt="Eco World" title="Eco World">
                         <!-- Golden Horse Rubber -->
-                        <img src="images/logos/golden_horse.png" alt="Golden Horse Rubber Sdn Bhd"
+                        <img src="/static/images/logos/golden_horse.png" alt="Golden Horse Rubber Sdn Bhd"
                             title="Golden Horse Rubber Sdn Bhd">
                         <!-- Tuck Sun Logistic -->
-                        <img src="images/logos/tuck_sun.png" alt="Tuck Sun Logistic Sdn Bhd"
+                        <img src="/static/images/logos/tuck_sun.png" alt="Tuck Sun Logistic Sdn Bhd"
                             title="Tuck Sun Logistic Sdn Bhd">
                         <!-- KPM -->
-                        <img src="images/logos/kpm.png" alt="Kementerian Pendidikan Malaysia"
+                        <img src="/static/images/logos/kpm.png" alt="Kementerian Pendidikan Malaysia"
                             title="Kementerian Pendidikan Malaysia">
                         <!-- Beon Packaging -->
-                        <img src="images/logos/beon_packaging.png" alt="Beon Packaging Solution Sdn Bhd"
+                        <img src="/static/images/logos/beon_packaging.png" alt="Beon Packaging Solution Sdn Bhd"
                             title="Beon Packaging Solution Sdn Bhd">
                         <!-- DIF Logistics -->
-                        <img src="images/logos/dif_logistics.png" alt="DIF Logistics(M) Sdn Bhd"
+                        <img src="/static/images/logos/dif_logistics.png" alt="DIF Logistics(M) Sdn Bhd"
                             title="DIF Logistics(M) Sdn Bhd">
                         <!-- TS Transport -->
-                        <img src="images/logos/ts_transport.png" alt="TS Transport Sdn Bhd"
+                        <img src="/static/images/logos/ts_transport.png" alt="TS Transport Sdn Bhd"
                             title="TS Transport Sdn Bhd">
                         <!-- Yong Fong Rubbers -->
-                        <img src="images/logos/yong_fong.png" alt="Yong Fong Rubbers Industries Sdn Bhd"
+                        <img src="/static/images/logos/yong_fong.png" alt="Yong Fong Rubbers Industries Sdn Bhd"
                             title="Yong Fong Rubbers Industries Sdn Bhd">
                         <!-- KT Haulage -->
-                        <img src="images/logos/kt_haulage.png" alt="KT Haulage Sdn Bhd" title="KT Haulage Sdn Bhd">
+                        <img src="/static/images/logos/kt_haulage.png" alt="KT Haulage Sdn Bhd"
+                            title="KT Haulage Sdn Bhd">
                         <!-- ALP Omega -->
-                        <img src="images/logos/alp_omega.png" alt="ALP Omega" title="ALP Omega">
+                        <img src="/static/images/logos/alp_omega.png" alt="ALP Omega" title="ALP Omega">
                         <!-- United Heat -->
-                        <img src="images/logos/united_heat.png" alt="United Heat Transfer Technology Sdn Bhd"
+                        <img src="/static/images/logos/united_heat.png" alt="United Heat Transfer Technology Sdn Bhd"
                             title="United Heat Transfer Technology Sdn Bhd">
 
                         <!-- Duplicate for continuous scroll -->
-                        <img src="images/logos/drb_hicom.png" alt="DRB Hicom Property">
-                        <img src="images/logos/glenmarie_cove.png" alt="Glenmarie Cove Residentials">
-                        <img src="images/logos/eco_world.png" alt="Eco World">
-                        <img src="images/logos/golden_horse.png" alt="Golden Horse Rubber Sdn Bhd">
-                        <img src="images/logos/tuck_sun.png" alt="Tuck Sun Logistic Sdn Bhd">
-                        <img src="images/logos/kpm.png" alt="Kementerian Pendidikan Malaysia">
-                        <img src="images/logos/beon_packaging.png" alt="Beon Packaging Solution Sdn Bhd">
-                        <img src="images/logos/dif_logistics.png" alt="DIF Logistics(M) Sdn Bhd">
-                        <img src="images/logos/ts_transport.png" alt="TS Transport Sdn Bhd">
-                        <img src="images/logos/yong_fong.png" alt="Yong Fong Rubbers Industries Sdn Bhd">
-                        <img src="images/logos/kt_haulage.png" alt="KT Haulage Sdn Bhd">
-                        <img src="images/logos/alp_omega.png" alt="ALP Omega">
-                        <img src="images/logos/united_heat.png" alt="United Heat Transfer Technology Sdn Bhd">
+                        <img src="/static/images/logos/drb_hicom.png" alt="DRB Hicom Property">
+                        <img src="/static/images/logos/glenmarie_cove.png" alt="Glenmarie Cove Residentials">
+                        <img src="/static/images/logos/eco_world.png" alt="Eco World">
+                        <img src="/static/images/logos/golden_horse.png" alt="Golden Horse Rubber Sdn Bhd">
+                        <img src="/static/images/logos/tuck_sun.png" alt="Tuck Sun Logistic Sdn Bhd">
+                        <img src="/static/images/logos/kpm.png" alt="Kementerian Pendidikan Malaysia">
+                        <img src="/static/images/logos/beon_packaging.png" alt="Beon Packaging Solution Sdn Bhd">
+                        <img src="/static/images/logos/dif_logistics.png" alt="DIF Logistics(M) Sdn Bhd">
+                        <img src="/static/images/logos/ts_transport.png" alt="TS Transport Sdn Bhd">
+                        <img src="/static/images/logos/yong_fong.png" alt="Yong Fong Rubbers Industries Sdn Bhd">
+                        <img src="/static/images/logos/kt_haulage.png" alt="KT Haulage Sdn Bhd">
+                        <img src="/static/images/logos/alp_omega.png" alt="ALP Omega">
+                        <img src="/static/images/logos/united_heat.png" alt="United Heat Transfer Technology Sdn Bhd">
                     </div>
                 </div>
             </div>
@@ -331,10 +322,22 @@
             <div class="carousel-container animate-on-scroll fade-up">
                 <div class="carousel-track-container">
                     <ul class="carousel-track">
-                        <li class="carousel-slide active"><img src="images/property/image1.png" alt="Team at work"></li>
-                        <li class="carousel-slide"><img src="images/property/image2.png" alt="Team meeting"></li>
-                        <li class="carousel-slide"><img src="images/property/image3.png" alt="Site visit"></li>
-                        <li class="carousel-slide"><img src="images/property/image4.png" alt="Project planning"></li>
+                        {% if team_slideshow %}
+                        {% for image in team_slideshow %}
+                        <li class="carousel-slide {% if loop.first %}active{% endif %}">
+                            <img src="{{ image.image_path }}" alt="Team Slideshow">
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <!-- Fallback -->
+                        <li class="carousel-slide active"><img src="/static/images/property/image1.png"
+                                alt="Team at work"></li>
+                        <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Team meeting">
+                        </li>
+                        <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Site visit"></li>
+                        <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Project planning">
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
                 <button class="carousel-nav prev">
@@ -362,13 +365,14 @@
                 </p>
             </div>
             <div class="team-grid animate-on-scroll fade-up">
-                <!-- Team Member 1 -->
+                {% for member in team_members %}
                 <div class="team-card">
-                    <img src="images/property/image1.png" alt="Team Member" class="team-avatar">
-                    <h3 class="team-name">Ahmad Zaki</h3>
-                    <p class="team-role">Managing Director</p>
-                    <a href="https://www.linkedin.com/in/luqman-zaharin/" class="linkedin-btn"
-                        aria-label="LinkedIn Profile" target="_blank" rel="noopener noreferrer">
+                    <img src="{{ member.image_path }}" alt="{{ member.name }}" class="team-avatar">
+                    <h3 class="team-name">{{ member.name }}</h3>
+                    <p class="team-role">{{ member.role }}</p>
+                    {% if member.linkedin_url %}
+                    <a href="{{ member.linkedin_url }}" class="linkedin-btn" aria-label="LinkedIn Profile"
+                        target="_blank" rel="noopener noreferrer">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -376,55 +380,9 @@
                             <circle cx="4" cy="4" r="2" />
                         </svg>
                     </a>
+                    {% endif %}
                 </div>
-
-                <!-- Team Member 2 -->
-                <div class="team-card">
-                    <img src="images/property/image2.png" alt="Team Member" class="team-avatar">
-                    <h3 class="team-name">Sarah Tan</h3>
-                    <p class="team-role">Operations Manager</p>
-                    <a href="https://www.linkedin.com/in/thaqiyuddin-mizan-046458216/" class="linkedin-btn"
-                        aria-label="LinkedIn Profile" target="_blank" rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg>
-                    </a>
-                </div>
-
-                <!-- Team Member 3 -->
-                <div class="team-card">
-                    <img src="images/property/image3.png" alt="Team Member" class="team-avatar">
-                    <h3 class="team-name">Raj Kumar</h3>
-                    <p class="team-role">Facility Head</p>
-                    <a href="#" class="linkedin-btn" aria-label="LinkedIn Profile" target="_blank"
-                        rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg>
-                    </a>
-                </div>
-
-                <!-- Team Member 4 -->
-                <div class="team-card">
-                    <img src="images/property/image4.png" alt="Team Member" class="team-avatar">
-                    <h3 class="team-name">Mei Ling</h3>
-                    <p class="team-role">Finance Director</p>
-                    <a href="#" class="linkedin-btn" aria-label="LinkedIn Profile" target="_blank"
-                        rel="noopener noreferrer">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg>
-                    </a>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </section>
@@ -479,7 +437,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="footer-logo">
-                        <img src="images/logo.jpeg" alt="Arena Empire Ventures" style="height: 40px; width: auto;">
+                        <img src="/static/images/logo.jpeg" alt="Arena Empire Ventures"
+                            style="height: 40px; width: auto;">
                     </div>
                     <p>Excellence in property and facility management across Malaysia.</p>
                 </div>
@@ -517,7 +476,7 @@
         </svg>
     </a>
 
-    <script src="script.js"></script>
+    <script src="/static/script.js"></script>
 </body>
 
 </html>
