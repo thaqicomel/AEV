@@ -149,20 +149,28 @@ async def update_content(request: Request, key: str = Form(...), value: str = Fo
 
 @app.post("/admin/add_gallery_image")
 async def add_gallery_image(request: Request, page: str = Form(...), section: str = Form(...), subsection: str = Form(None), title: str = Form(None), description: str = Form(None), image: UploadFile = File(...)):
+    print(f"DEBUG: add_gallery_image - page={page}, section={section}, subsection={subsection}, title={title}")
     user = request.cookies.get("admin_session")
     if not user:
          raise HTTPException(status_code=401)
     
+    # Normalize subsection
+    if not subsection or subsection.strip() == "":
+        subsection = None
+
     conn = get_db_connection()
-    # Check limit of 4 images per section or subsection
+    # Check current count
     if subsection:
         count = conn.execute("SELECT COUNT(*) FROM gallery WHERE page = ? AND subsection = ?", (page, subsection)).fetchone()[0]
     else:
         count = conn.execute("SELECT COUNT(*) FROM gallery WHERE page = ? AND section = ? AND subsection IS NULL", (page, section)).fetchone()[0]
+
+    # Determine limit based on section
+    limit = 7 if (page == 'index' and section == 'team_slideshow') else 4
     
-    if count >= 4:
+    if count >= limit:
         conn.close()
-        return RedirectResponse(url="/admin/dashboard?error=Limit%20Reached%20(Max%204)", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(url=f"/admin/dashboard?error=Limit%20Reached%20(Max%20{limit})", status_code=status.HTTP_303_SEE_OTHER)
 
     file_location = f"static/images/{image.filename}"
     with open(file_location, "wb+") as file_object:
@@ -182,7 +190,8 @@ async def delete_gallery_image(request: Request, id: int = Form(...)):
          raise HTTPException(status_code=401)
          
     conn = get_db_connection()
-    conn.execute("DELETE FROM gallery WHERE id = ?", (id,))
+    result = conn.execute("DELETE FROM gallery WHERE id = ?", (id,))
+    print(f"DEBUG: delete_gallery_image - id={id}, rows_affected={result.rowcount}")
     conn.commit()
     conn.close()
     
@@ -203,15 +212,21 @@ async def update_gallery_description(request: Request, id: int = Form(...), titl
 
 @app.post("/admin/add_team_member")
 async def add_team_member(request: Request, name: str = Form(...), role: str = Form(...), linkedin_url: str = Form(None), image: UploadFile = File(...)):
+    print(f"DEBUG: add_team_member - name={name}, role={role}")
     user = request.cookies.get("admin_session")
     if not user:
          raise HTTPException(status_code=401)
     
+    conn = get_db_connection()
+    count = conn.execute("SELECT COUNT(*) FROM team_members").fetchone()[0]
+    if count >= 8:
+        conn.close()
+        return RedirectResponse(url="/admin/dashboard?error=Limit%20Reached%20(Max%208%20Members)", status_code=status.HTTP_303_SEE_OTHER)
+
     file_location = f"static/images/{image.filename}"
     with open(file_location, "wb+") as file_object:
         shutil.copyfileobj(image.file, file_object)
         
-    conn = get_db_connection()
     conn.execute("INSERT INTO team_members (name, role, linkedin_url, image_path) VALUES (?, ?, ?, ?)", 
                  (name, role, linkedin_url, f"/static/images/{image.filename}"))
     conn.commit()
@@ -219,13 +234,23 @@ async def add_team_member(request: Request, name: str = Form(...), role: str = F
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
 
 @app.post("/admin/update_team_member")
-async def update_team_member(request: Request, id: int = Form(...), name: str = Form(...), role: str = Form(...), linkedin_url: str = Form(None)):
+async def update_team_member(request: Request, id: int = Form(...), name: str = Form(...), role: str = Form(...), linkedin_url: str = Form(None), image: UploadFile = File(None)):
+    print(f"DEBUG: update_team_member - id={id}, name={name}, role={role}")
     user = request.cookies.get("admin_session")
     if not user:
          raise HTTPException(status_code=401)
          
     conn = get_db_connection()
-    conn.execute("UPDATE team_members SET name = ?, role = ?, linkedin_url = ? WHERE id = ?", (name, role, linkedin_url, id))
+    
+    if image and image.filename:
+        file_location = f"static/images/{image.filename}"
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(image.file, file_object)
+        image_path = f"/static/images/{image.filename}"
+        conn.execute("UPDATE team_members SET name = ?, role = ?, linkedin_url = ?, image_path = ? WHERE id = ?", (name, role, linkedin_url, image_path, id))
+    else:
+        conn.execute("UPDATE team_members SET name = ?, role = ?, linkedin_url = ? WHERE id = ?", (name, role, linkedin_url, id))
+        
     conn.commit()
     conn.close()
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
@@ -237,7 +262,8 @@ async def delete_team_member(request: Request, id: int = Form(...)):
          raise HTTPException(status_code=401)
     
     conn = get_db_connection()
-    conn.execute("DELETE FROM team_members WHERE id = ?", (id,))
+    result = conn.execute("DELETE FROM team_members WHERE id = ?", (id,))
+    print(f"DEBUG: delete_team_member - id={id}, rows_affected={result.rowcount}")
     conn.commit()
     conn.close()
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)

@@ -11,14 +11,19 @@ function handleLoadingScreen() {
         // working on the existing structure or the replacement we make in html
     }
 
-    // Hide loading screen after page loads
-    window.addEventListener('load', () => {
+    const hideLoader = () => {
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
             // Trigger initial animations after loader is gone
             setTimeout(triggerInitialAnimations, 500);
-        }, 1500); // Extended delay for users to see the nice animation
-    });
+        }, 1500);
+    };
+
+    if (document.readyState === 'complete') {
+        hideLoader();
+    } else {
+        window.addEventListener('load', hideLoader);
+    }
 }
 
 function triggerInitialAnimations() {
@@ -54,115 +59,142 @@ function animateOnScroll() {
             element.classList.add('fade-up');
         }
         observer.observe(element);
+
+        // Safety: check if element is already in view
+        const rect = element.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom >= 0) {
+            element.classList.add('visible');
+        }
     });
+
+    // Handle Navbar scroll effect
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    }
 }
 
 // ===================================
 // Modern Carousel
 // ===================================
 function setupCarousel() {
-    const carousels = document.querySelectorAll('.carousel-container');
+    try {
+        const carousels = document.querySelectorAll('.carousel-container');
 
-    carousels.forEach(container => {
-        const track = container.querySelector('.carousel-track');
-        if (!track) return;
+        carousels.forEach(container => {
+            const track = container.querySelector('.carousel-track');
+            if (!track) return;
 
-        const slides = Array.from(track.children);
-        const nextButton = container.querySelector('.carousel-nav.next');
-        const prevButton = container.querySelector('.carousel-nav.prev');
-        const indicatorsContainer = container.querySelector('.carousel-indicators');
+            const slides = Array.from(track.children);
+            if (!slides || slides.length === 0) return; // Skip empty carousels
 
-        let slideWidth = slides[0].getBoundingClientRect().width;
-        let currentSlideIndex = 0;
-        let autoplayInterval;
+            const nextButton = container.querySelector('.carousel-nav.next');
+            const prevButton = container.querySelector('.carousel-nav.prev');
+            const indicatorsContainer = container.querySelector('.carousel-indicators');
 
-        // Position slides
-        const setSlidePosition = (slide, index) => {
-            slide.style.left = slideWidth * index + 'px';
-        };
-        // We actually want them relative in flex, so we might not need absolute positioning logic
-        // But for a sliding track, we usually move the track. Let's stick to track translation.
+            let slideWidth = slides[0].getBoundingClientRect().width;
+            let currentSlideIndex = 0;
+            let autoplayInterval;
 
-        const updateSlideWidth = () => {
-            slideWidth = slides[0].getBoundingClientRect().width;
-            moveToSlide(currentSlideIndex);
-        };
+            // ... (rest of the logic)
+            // Position slides
+            const setSlidePosition = (slide, index) => {
+                slide.style.left = slideWidth * index + 'px';
+            };
 
-        const moveToSlide = (index) => {
-            track.style.transform = 'translateX(-' + (slideWidth * index) + 'px)';
-            currentSlideIndex = index;
+            const updateSlideWidth = () => {
+                if (!slides || slides.length === 0) return;
+                slideWidth = slides[0].getBoundingClientRect().width;
+                moveToSlide(currentSlideIndex);
+            };
 
-            // Update active classes
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[index].classList.add('active');
+            const moveToSlide = (index) => {
+                if (!slides || slides.length === 0) return;
+                track.style.transform = 'translateX(-' + (slideWidth * index) + 'px)';
+                currentSlideIndex = index;
 
-            updateIndicators(index);
-        };
+                // Update active classes
+                slides.forEach(slide => slide.classList.remove('active'));
+                if (slides[index]) slides[index].classList.add('active');
 
-        const updateIndicators = (index) => {
-            if (!indicatorsContainer) return;
-            const indicators = Array.from(indicatorsContainer.children);
-            indicators.forEach(ind => ind.classList.remove('active'));
-            if (indicators[index]) indicators[index].classList.add('active');
-        };
+                updateIndicators(index);
+            };
 
-        // Create indicators
-        if (indicatorsContainer) {
-            slides.forEach((_, i) => {
-                const indicator = document.createElement('div');
-                indicator.classList.add('indicator');
-                if (i === 0) indicator.classList.add('active');
-                indicator.addEventListener('click', () => {
-                    moveToSlide(i);
+            const updateIndicators = (index) => {
+                if (!indicatorsContainer) return;
+                const indicators = Array.from(indicatorsContainer.children);
+                indicators.forEach(ind => ind.classList.remove('active'));
+                if (indicators[index]) indicators[index].classList.add('active');
+            };
+
+            // Create indicators
+            if (indicatorsContainer) {
+                indicatorsContainer.innerHTML = ''; // Clear existing
+                slides.forEach((_, i) => {
+                    const indicator = document.createElement('div');
+                    indicator.classList.add('indicator');
+                    if (i === 0) indicator.classList.add('active');
+                    indicator.addEventListener('click', () => {
+                        moveToSlide(i);
+                        resetAutoplay();
+                    });
+                    indicatorsContainer.appendChild(indicator);
+                });
+            }
+
+            // Navigation Events
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    const nextIndex = (currentSlideIndex + 1) % slides.length;
+                    moveToSlide(nextIndex);
                     resetAutoplay();
                 });
-                indicatorsContainer.appendChild(indicator);
-            });
-        }
+            }
 
-        // Navigation Events
-        if (nextButton) {
-            nextButton.addEventListener('click', () => {
-                const nextIndex = (currentSlideIndex + 1) % slides.length;
-                moveToSlide(nextIndex);
-                resetAutoplay();
-            });
-        }
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                    const prevIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+                    moveToSlide(prevIndex);
+                    resetAutoplay();
+                });
+            }
 
-        if (prevButton) {
-            prevButton.addEventListener('click', () => {
-                const prevIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-                moveToSlide(prevIndex);
-                resetAutoplay();
-            });
-        }
+            // Autoplay
+            const startAutoplay = () => {
+                if (slides.length <= 1) return; // No autoplay for single or zero slides
+                autoplayInterval = setInterval(() => {
+                    const nextIndex = (currentSlideIndex + 1) % slides.length;
+                    moveToSlide(nextIndex);
+                }, 5000);
+            };
 
-        // Autoplay
-        const startAutoplay = () => {
-            autoplayInterval = setInterval(() => {
-                const nextIndex = (currentSlideIndex + 1) % slides.length;
-                moveToSlide(nextIndex);
-            }, 5000);
-        };
+            const stopAutoplay = () => {
+                clearInterval(autoplayInterval);
+            };
 
-        const stopAutoplay = () => {
-            clearInterval(autoplayInterval);
-        };
+            const resetAutoplay = () => {
+                stopAutoplay();
+                startAutoplay();
+            };
 
-        const resetAutoplay = () => {
-            stopAutoplay();
+            // Initialize
+            window.addEventListener('resize', updateSlideWidth);
+            if (slides[0]) slides[0].classList.add('active');
             startAutoplay();
-        };
 
-        // Initialize
-        window.addEventListener('resize', updateSlideWidth);
-        slides[0].classList.add('active');
-        startAutoplay();
-
-        // Pause on hover
-        container.addEventListener('mouseenter', stopAutoplay);
-        container.addEventListener('mouseleave', startAutoplay);
-    });
+            // Pause on hover
+            container.addEventListener('mouseenter', stopAutoplay);
+            container.addEventListener('mouseleave', startAutoplay);
+        });
+    } catch (error) {
+        console.error("Carousel Setup Error:", error);
+    }
 }
 
 // ===================================

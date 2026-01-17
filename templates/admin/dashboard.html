@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/static/css/admin.css">
+    <link rel="stylesheet" href="/static/css/variables.css">
+    <link rel="stylesheet" href="/static/css/admin.css?v=1.1">
     <style>
         .gallery-grid {
             display: grid;
@@ -98,8 +99,11 @@
         <!-- Team Members Management Section -->
         <section style="margin-top: 3rem;">
             <h2>Manage Team Members</h2>
-            <div class="content-table" style="padding: 1rem; margin-bottom: 2rem;">
-                <h3>Add New Team Member</h3>
+            <div class="content-table" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <p
+                    style="background: rgba(141, 198, 63, 0.1); padding: 1rem; border-left: 5px solid var(--secondary); margin-bottom: 1.5rem; border-radius: 8px;">
+                    <strong>ℹ️ Note:</strong> You can add up to <strong>8 members</strong> to the team.
+                </p>
                 <form action="/admin/add_team_member" method="POST" enctype="multipart/form-data">
                     <div class="edit-form"
                         style="display: grid; gap: 1rem; grid-template-columns: 1fr 1fr 1fr; align-items: end;">
@@ -116,10 +120,18 @@
             <div class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
                 {% for member in team_items %}
                 <div class="gallery-item" style="text-align: left; padding: 1rem;">
-                    <form action="/admin/update_team_member" method="POST" id="edit-form-{{ member.id }}">
+                    <form action="/admin/update_team_member" method="POST" id="edit-form-{{ member.id }}"
+                        enctype="multipart/form-data">
                         <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <img src="{{ member.image_path }}" alt="Avatar"
-                                style="height: 60px; width: 60px; object-fit: cover; border-radius: 50%;">
+                            <div style="text-align: center;">
+                                <img src="{{ member.image_path }}" alt="Avatar"
+                                    style="height: 60px; width: 60px; object-fit: cover; border-radius: 50%; margin-bottom: 0.5rem;">
+                                <label
+                                    style="display: block; font-size: 0.7rem; color: var(--secondary); cursor: pointer; font-weight: 600;">
+                                    Change Photo
+                                    <input type="file" name="image" accept="image/*" style="display: none;">
+                                </label>
+                            </div>
                             <div style="flex-grow: 1;">
                                 <input type="hidden" name="id" value="{{ member.id }}">
                                 <label style="font-size: 0.8rem; color: #666;">Name</label>
@@ -154,11 +166,13 @@
         <!-- Gallery Management Section -->
         <!-- Gallery Management Section -->
         <section style="margin-top: 3rem;">
-            <h2 style="color: #28a745;">📸 Main Page Image Galleries</h2>
+            <h2>📸 Main Page Image Galleries</h2>
             <p><strong>Manage banner/hero images for each page.</strong> Each section below allows you to add and delete
                 images for that specific page.</p>
-            <p style="background: #fff3cd; padding: 0.75rem; border-left: 4px solid #ffc107; margin-bottom: 2rem;">
-                <strong>⚠️ Note:</strong> Maximum 4 images per gallery recommended for optimal performance.
+            <p
+                style="background: rgba(0, 114, 188, 0.05); padding: 1rem; border-left: 5px solid var(--primary); margin-bottom: 2rem; border-radius: 8px;">
+                <strong>ℹ️ Note:</strong> Max <strong>7 images</strong> for Home Page gallery, and 4 images for other
+                pages.
             </p>
 
             {% set gallery_subjects = [
@@ -196,13 +210,13 @@
             <div
                 style="margin-bottom: 3rem; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; background: #fdfdfd;">
                 <h3
-                    style="color: var(--primary); display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid #f3f4f6; padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+                    style="color: var(--primary); display: flex; align-items: center; gap: 0.5rem; border-bottom: 2px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1.5rem; font-family: var(--font-display);">
                     <span>📁</span> {{ subject.name }}
                 </h3>
 
                 <!-- Dedicated Add Form for this subject -->
                 <div
-                    style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+                    style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin-bottom: 2rem; border-left: 5px solid var(--secondary);">
                     <h4 style="margin-top: 0; font-size: 0.95rem; color: #475569;">Add Image to {{ subject.name }}</h4>
                     <form action="/admin/add_gallery_image" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="page" value="{{ subject.id }}">

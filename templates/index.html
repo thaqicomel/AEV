@@ -308,25 +308,15 @@
                 </p>
             </div>
 
+            {% if team_slideshow %}
             <div class="carousel-container animate-on-scroll fade-up">
                 <div class="carousel-track-container">
                     <ul class="carousel-track">
-                        {% if team_slideshow %}
                         {% for image in team_slideshow %}
                         <li class="carousel-slide {% if loop.first %}active{% endif %}">
                             <img src="{{ image.image_path }}" alt="Team Slideshow">
                         </li>
                         {% endfor %}
-                        {% else %}
-                        <!-- Fallback -->
-                        <li class="carousel-slide active"><img src="/static/images/property/image1.png"
-                                alt="Team at work"></li>
-                        <li class="carousel-slide"><img src="/static/images/property/image2.png" alt="Team meeting">
-                        </li>
-                        <li class="carousel-slide"><img src="/static/images/property/image3.png" alt="Site visit"></li>
-                        <li class="carousel-slide"><img src="/static/images/property/image4.png" alt="Project planning">
-                        </li>
-                        {% endif %}
                     </ul>
                 </div>
                 <button class="carousel-nav prev">
@@ -341,6 +331,7 @@
                 </button>
                 <div class="carousel-indicators"></div>
             </div>
+            {% endif %}
         </div>
     </section>
 
