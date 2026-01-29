@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="/static/css/variables.css">
-    <link rel="stylesheet" href="/static/css/admin.css?v=1.1">
+    <link rel="stylesheet" href="/static/css/admin.css?v=2.0">
     <style>
         .gallery-grid {
             display: grid;
@@ -96,73 +96,6 @@
             </table>
         </section>
 
-        <!-- Team Members Management Section -->
-        <section style="margin-top: 3rem;">
-            <h2>Manage Team Members</h2>
-            <div class="content-table" style="padding: 1.5rem; margin-bottom: 2rem;">
-                <p
-                    style="background: rgba(141, 198, 63, 0.1); padding: 1rem; border-left: 5px solid var(--secondary); margin-bottom: 1.5rem; border-radius: 8px;">
-                    <strong>ℹ️ Note:</strong> You can add up to <strong>8 members</strong> to the team.
-                </p>
-                <form action="/admin/add_team_member" method="POST" enctype="multipart/form-data">
-                    <div class="edit-form"
-                        style="display: grid; gap: 1rem; grid-template-columns: 1fr 1fr 1fr; align-items: end;">
-                        <input type="text" name="name" class="edit-input" placeholder="Name" required>
-                        <input type="text" name="role" class="edit-input" placeholder="Role/Title" required>
-                        <input type="text" name="linkedin_url" class="edit-input" placeholder="LinkedIn URL (Optional)">
-                        <input type="file" name="image" class="edit-input" required accept="image/*">
-                        <button type="submit" class="btn">Add Member</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Team Grid Layout for Editing -->
-            <div class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
-                {% for member in team_items %}
-                <div class="gallery-item" style="text-align: left; padding: 1rem;">
-                    <form action="/admin/update_team_member" method="POST" id="edit-form-{{ member.id }}"
-                        enctype="multipart/form-data">
-                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
-                            <div style="text-align: center;">
-                                <img src="{{ member.image_path }}" alt="Avatar"
-                                    style="height: 60px; width: 60px; object-fit: cover; border-radius: 50%; margin-bottom: 0.5rem;">
-                                <label
-                                    style="display: block; font-size: 0.7rem; color: var(--secondary); cursor: pointer; font-weight: 600;">
-                                    Change Photo
-                                    <input type="file" name="image" accept="image/*" style="display: none;">
-                                </label>
-                            </div>
-                            <div style="flex-grow: 1;">
-                                <input type="hidden" name="id" value="{{ member.id }}">
-                                <label style="font-size: 0.8rem; color: #666;">Name</label>
-                                <input type="text" name="name" value="{{ member.name }}" class="edit-input"
-                                    style="margin-bottom: 0.5rem;" required>
-
-                                <label style="font-size: 0.8rem; color: #666;">Role</label>
-                                <input type="text" name="role" value="{{ member.role }}" class="edit-input"
-                                    style="margin-bottom: 0.5rem;" required>
-
-                                <label style="font-size: 0.8rem; color: #666;">LinkedIn URL</label>
-                                <input type="text" name="linkedin_url" value="{{ member.linkedin_url }}"
-                                    class="edit-input" placeholder="No Link">
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                            <button type="submit" class="save-btn">Save Changes</button>
-                        </div>
-                    </form>
-
-                    <form action="/admin/delete_team_member" method="POST"
-                        onsubmit="return confirm('Delete this member?');"
-                        style="margin-top: 0.5rem; text-align: right;">
-                        <input type="hidden" name="id" value="{{ member.id }}">
-                        <button type="submit" class="delete-btn">Delete Member</button>
-                    </form>
-                </div>
-                {% endfor %}
-            </div>
-        </section>
-
         <!-- Gallery Management Section -->
         <!-- Gallery Management Section -->
         <section style="margin-top: 3rem;">
@@ -179,31 +112,7 @@
             {'id': 'index', 'name': 'Home Page (Team Slideshow)', 'section': 'team_slideshow'},
             {'id': 'property-management', 'name': 'Property Management', 'section': 'gallery'},
             {'id': 'facilities-management', 'name': 'Facilities Management', 'section': 'gallery'},
-            {'id': 'specialized-maintenance', 'name': 'Specialized Maintenance', 'section': 'gallery'},
             {'id': 'warehouse-management', 'name': 'Warehouse Management', 'section': 'gallery'}
-            ] %}
-
-            {% set specialized_subs = [
-            ('bund-enhancement', 'Bund Enhancement'),
-            ('waste-disposal', 'Unregulated Waste Disposal Area'),
-            ('tree-removal', 'MPK-Initiated Tree Removal'),
-            ('porthole-repair', 'Porthole Repair & Patching'),
-            ('scupper-drain', 'Scupper Drain Pipe Replacement'),
-            ('water-pipes', 'Water Pipes & Shower Repair'),
-            ('pedestrian-pathways', 'Pedestrian Pathways Repair'),
-            ('exterior-painting', 'Clubhouse Exterior Painting'),
-            ('playground-repainting', 'Playground Equipment Repainting'),
-            ('drainage-cleaning', 'Drainage System Cleaning'),
-            ('scupper-inspection', 'Scupper Drain Inspection'),
-            ('signage-installation', 'Signage Installation'),
-            ('identification-banner', 'Identification Banner'),
-            ('tree-trimming', 'Tree Trimming & Maintenance'),
-            ('animal-control', 'Animal Control Trap Install'),
-            ('solar-lighting', 'Solar Lighting Maintenance'),
-            ('coastal-debris', 'Coastal Debris Cleaning'),
-            ('lagoon-cleaning', 'Lagoon & Weed removal'),
-            ('wall-fence', 'Wall & Fence Fixing'),
-            ('community-events', 'Merdeka & Community Events')
             ] %}
 
             {% for subject in gallery_subjects %}
@@ -305,6 +214,198 @@
             {% endfor %}
         </section>
 
+        <!-- Team Members Management Section -->
+        <section style="margin-top: 3rem;">
+            <h2>Manage Team Members</h2>
+            <div class="content-table" style="padding: 1.5rem; margin-bottom: 2rem;">
+                <p
+                    style="background: rgba(141, 198, 63, 0.1); padding: 1rem; border-left: 5px solid var(--secondary); margin-bottom: 1.5rem; border-radius: 8px;">
+                    <strong>ℹ️ Note:</strong> You can add up to <strong>8 members</strong> to the team.
+                </p>
+                <form action="/admin/add_team_member" method="POST" enctype="multipart/form-data">
+                    <div class="edit-form"
+                        style="display: grid; gap: 1rem; grid-template-columns: 1fr 1fr 1fr; align-items: end;">
+                        <input type="text" name="name" class="edit-input" placeholder="Name" required>
+                        <input type="text" name="role" class="edit-input" placeholder="Role/Title" required>
+                        <input type="text" name="linkedin_url" class="edit-input" placeholder="LinkedIn URL (Optional)">
+                        <input type="file" name="image" class="edit-input" required accept="image/*">
+                        <button type="submit" class="btn">Add Member</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Team Grid Layout for Editing -->
+            <div class="gallery-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+                {% for member in team_items %}
+                <div class="gallery-item" style="text-align: left; padding: 1rem;">
+                    <form action="/admin/update_team_member" method="POST" id="edit-form-{{ member.id }}"
+                        enctype="multipart/form-data">
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="text-align: center;">
+                                <img src="{{ member.image_path }}" alt="Avatar"
+                                    style="height: 60px; width: 60px; object-fit: cover; border-radius: 50%; margin-bottom: 0.5rem;">
+                                <label
+                                    style="display: block; font-size: 0.7rem; color: var(--secondary); cursor: pointer; font-weight: 600;">
+                                    Change Photo
+                                    <input type="file" name="image" accept="image/*" style="display: none;">
+                                </label>
+                            </div>
+                            <div style="flex-grow: 1;">
+                                <input type="hidden" name="id" value="{{ member.id }}">
+                                <label style="font-size: 0.8rem; color: #666;">Name</label>
+                                <input type="text" name="name" value="{{ member.name }}" class="edit-input"
+                                    style="margin-bottom: 0.5rem;" required>
+
+                                <label style="font-size: 0.8rem; color: #666;">Role</label>
+                                <input type="text" name="role" value="{{ member.role }}" class="edit-input"
+                                    style="margin-bottom: 0.5rem;" required>
+
+                                <label style="font-size: 0.8rem; color: #666;">LinkedIn URL</label>
+                                <input type="text" name="linkedin_url" value="{{ member.linkedin_url }}"
+                                    class="edit-input" placeholder="No Link">
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                            <button type="submit" class="save-btn">Save Changes</button>
+                        </div>
+                    </form>
+
+                    <form action="/admin/delete_team_member" method="POST"
+                        onsubmit="return confirm('Delete this member?');"
+                        style="margin-top: 0.5rem; text-align: right;">
+                        <input type="hidden" name="id" value="{{ member.id }}">
+                        <button type="submit" class="delete-btn">Delete Member</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Specialized Maintenance Management Section -->
+        <section style="margin-top: 3rem;">
+            <h2>🛠️ Specialized Maintenance Management</h2>
+            <p>Manage Services (Level 1) and Sub-Services (Level 2). Add images to Sub-Services.</p>
+
+            <!-- Add New Service Form -->
+            <div
+                style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; border-left: 5px solid var(--secondary);">
+                <h3 style="margin-top: 0; color: var(--dark);">Add New Service</h3>
+                <form action="/admin/add_service" method="POST" enctype="multipart/form-data">
+                    <div style="display: grid; gap: 1rem; grid-template-columns: 1fr 1fr; align-items: start;">
+                        <div>
+                            <label>Service Name (Required)</label>
+                            <input type="text" name="name" class="edit-input" required
+                                placeholder="e.g. Landscape Maintenance">
+                        </div>
+                        <div>
+                            <label>Service Image (Required)</label>
+                            <input type="file" name="image" class="edit-input" required accept="image/*">
+                        </div>
+                        <div style="grid-column: 1 / -1;">
+                            <label>Description (Required)</label>
+                            <textarea name="description" class="edit-input" required rows="2"
+                                placeholder="Short description of the service"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Add Service</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- List of Services -->
+            {% for service in services_items %}
+            <div
+                style="border: 1px solid #ddd; border-radius: 8px; margin-bottom: 2rem; overflow: hidden; background: white;">
+                <!-- Service Header -->
+                <div
+                    style="background: #f1f5f9; padding: 1rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <img src="{{ service.image_path }}"
+                            style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.2rem;">{{ service.name }}</h3>
+                            <p style="margin: 0; font-size: 0.9rem; color: #666;">{{ service.description }}</p>
+                        </div>
+                    </div>
+                    <form action="/admin/delete_service" method="POST"
+                        onsubmit="return confirm('Delete {{ service.name }} and ALL its sub-services?');">
+                        <input type="hidden" name="id" value="{{ service.id }}">
+                        <button type="submit" class="delete-btn">Delete Service</button>
+                    </form>
+                </div>
+
+                <!-- Sub-Services Area -->
+                <div style="padding: 1rem;">
+                    <h4 style="margin-top: 0;">Sub-Services</h4>
+
+                    <!-- List Sub-Services -->
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+                        {% for sub in service.sub_services %}
+                        <div
+                            style="border: 1px solid #eee; padding: 1rem; border-radius: 6px; position: relative; background: #fff;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <strong style="color: var(--primary);">{{ sub.name }}</strong>
+                                <form action="/admin/delete_sub_service" method="POST"
+                                    onsubmit="return confirm('Delete sub-service {{ sub.name }}?');"
+                                    style="display: inline;">
+                                    <input type="hidden" name="id" value="{{ sub.id }}">
+                                    <button type="submit"
+                                        style="background: none; border: none; color: #dc3545; cursor: pointer;">🗑️</button>
+                                </form>
+                            </div>
+                            <p style="font-size: 0.85rem; color: #555; margin-bottom: 0.5rem;">{{ sub.description }}</p>
+
+                            <!-- Sub-Service Images -->
+                            <div style="display: flex; gap: 0.25rem; overflow-x: auto; padding-bottom: 0.5rem;">
+                                {% for img in sub.images %}
+                                <div style="position: relative; flex-shrink: 0;">
+                                    <img src="{{ img.image_path }}"
+                                        style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    <form action="/admin/delete_sub_service_image" method="POST"
+                                        style="position: absolute; top: -5px; right: -5px;">
+                                        <input type="hidden" name="id" value="{{ img.id }}">
+                                        <button type="submit"
+                                            style="background: rebeccapurple; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center;">x</button>
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Add Image to Sub-Service -->
+                            <form action="/admin/add_sub_service_images" method="POST" enctype="multipart/form-data"
+                                style="margin-top: 0.5rem; border-top: 1px dashed #eee; padding-top: 0.5rem;">
+                                <input type="hidden" name="sub_service_id" value="{{ sub.id }}">
+                                <label style="font-size: 0.75rem; display: block; margin-bottom: 0.25rem;">Add Images
+                                    (Max 5 total)</label>
+                                <div style="display: flex; gap: 0.5rem;">
+                                    <input type="file" name="images" multiple accept="image/*"
+                                        style="font-size: 0.8rem; width: 100%;">
+                                    <button type="submit"
+                                        style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Upload</button>
+                                </div>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Add New Sub-Service Form -->
+                    <div style="background: #f9f9f9; padding: 1rem; border-radius: 4px; border: 1px dashed #ccc;">
+                        <h5 style="margin-top: 0; margin-bottom: 0.5rem;">Add Sub-Service to {{ service.name }}</h5>
+                        <form action="/admin/add_sub_service" method="POST">
+                            <input type="hidden" name="service_id" value="{{ service.id }}">
+                            <div style="display: grid; gap: 0.5rem; grid-template-columns: 1fr 2fr auto;">
+                                <input type="text" name="name" class="edit-input" placeholder="Name" required
+                                    style="padding: 0.4rem;">
+                                <input type="text" name="description" class="edit-input" placeholder="Description"
+                                    required style="padding: 0.4rem;">
+                                <button type="submit" class="save-btn">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
 
 
     </div>

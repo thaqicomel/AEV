@@ -70,6 +70,38 @@ def init_db():
             image_path TEXT
         )
     ''')
+
+    # Create Services table (Level 1)
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS services (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            page TEXT NOT NULL,
+            name TEXT NOT NULL,
+            description TEXT,
+            image_path TEXT
+        )
+    ''')
+
+    # Create Sub-Services table (Level 2)
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS sub_services (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            service_id INTEGER NOT NULL,
+            name TEXT NOT NULL,
+            description TEXT,
+            FOREIGN KEY (service_id) REFERENCES services (id) ON DELETE CASCADE
+        )
+    ''')
+
+    # Create Sub-Service Images table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS sub_service_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sub_service_id INTEGER NOT NULL,
+            image_path TEXT NOT NULL,
+            FOREIGN KEY (sub_service_id) REFERENCES sub_services (id) ON DELETE CASCADE
+        )
+    ''')
     
     # Check if admin exists
     c.execute("SELECT * FROM users WHERE username='admin'")
@@ -113,6 +145,29 @@ def init_db():
         ]
         c.executemany("INSERT INTO gallery (page, section, image_path) VALUES (?, ?, ?)", slideshow_seeds)
 
+    # Seed Services for Specialized Maintenance (if empty)
+    c.execute("SELECT COUNT(*) FROM services WHERE page='specialized-maintenance'")
+    if c.fetchone()[0] == 0:
+        # 1. Create a Service
+        c.execute("INSERT INTO services (page, name, description, image_path) VALUES (?, ?, ?, ?)", 
+                 ('specialized-maintenance', 'Landscaping Services', 'Professional landscaping and garden maintenance.', '/static/images/property/image1.png'))
+        service_id = c.lastrowid
+        
+        # 2. Create Sub-Services
+        c.execute("INSERT INTO sub_services (service_id, name, description) VALUES (?, ?, ?)", 
+                 (service_id, 'Tree Trimming', 'Expert tree trimming to ensure safety and aesthetics.'))
+        sub_id_1 = c.lastrowid
+        
+        c.execute("INSERT INTO sub_services (service_id, name, description) VALUES (?, ?, ?)", 
+                 (service_id, 'Lawn Care', 'Regular lawn mowing and maintenance for a pristine look.'))
+        sub_id_2 = c.lastrowid
+        
+        # 3. Add Images to Sub-Services
+        c.executemany("INSERT INTO sub_service_images (sub_service_id, image_path) VALUES (?, ?)", [
+            (sub_id_1, '/static/images/property/image2.png'),
+            (sub_id_1, '/static/images/property/image3.png'),
+            (sub_id_2, '/static/images/property/image4.png')
+        ])
 
     conn.commit()
     conn.close()

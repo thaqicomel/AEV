@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, Form, Depends, HTTPException, status, UploadFile, File
+from typing import List
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -38,6 +39,23 @@ def get_subsection_images(page_name, subsection):
     rows = conn.execute("SELECT * FROM gallery WHERE page = ? AND subsection = ?", (page_name, subsection)).fetchall()
     conn.close()
     return rows
+
+# Helper to get services hierarchy (Service -> Sub-Service -> Images)
+def get_services_with_hierarchy(page_name):
+    conn = get_db_connection()
+    services = [dict(row) for row in conn.execute("SELECT * FROM services WHERE page = ?", (page_name,)).fetchall()]
+    
+    for service in services:
+        sub_services = [dict(row) for row in conn.execute("SELECT * FROM sub_services WHERE service_id = ?", (service['id'],)).fetchall()]
+        
+        for sub in sub_services:
+            images = [dict(row) for row in conn.execute("SELECT * FROM sub_service_images WHERE sub_service_id = ?", (sub['id'],)).fetchall()]
+            sub['images'] = images
+            
+        service['sub_services'] = sub_services
+        
+    conn.close()
+    return services
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
@@ -82,11 +100,17 @@ async def read_page(request: Request, page_name: str):
             subsection_images_grouped[subsection] = []
         subsection_images_grouped[subsection].append(img)
     
+    # Fetch specialized services hierarchy if needed
+    services_data = []
+    if page_name == "specialized-maintenance":
+        services_data = get_services_with_hierarchy(page_name)
+
     return templates.TemplateResponse(f"{page_name}.html", {
         "request": request, 
         "content": content,
         "gallery_images": gallery_images,
-        "subsection_images": subsection_images_grouped
+        "subsection_images": subsection_images_grouped,
+        "services_data": services_data
     })
 
 # --- Admin Routes ---
@@ -126,12 +150,16 @@ async def dashboard(request: Request):
     team_rows = [dict(row) for row in conn.execute("SELECT * FROM team_members").fetchall()]
     conn.close()
     
+    # Fetch services for dashboard (focusing on specialized-maintenance for now)
+    services_rows = get_services_with_hierarchy('specialized-maintenance')
+
     return templates.TemplateResponse("admin/dashboard.html", {
         "request": request, 
         "user": user, 
         "content_items": content_rows,
         "gallery_items": gallery_rows,
-        "team_items": team_rows
+        "team_items": team_rows,
+        "services_items": services_rows
     })
 
 @app.post("/admin/update_content")
@@ -267,6 +295,117 @@ async def delete_team_member(request: Request, id: int = Form(...)):
     conn.commit()
     conn.close()
     return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+
+# --- Service / Sub-Service Admin Routes ---
+
+@app.post("/admin/add_service")
+async def add_service(request: Request, name: str = Form(...), description: str = Form(None), image: UploadFile = File(None)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    # Require image for new service per requirements
+    if not image or not image.filename:
+        # If no image, redirect with error (validation per user req)
+        return RedirectResponse(url="/admin/dashboard?error=Service%20Must%20Have%20Image", status_code=status.HTTP_303_SEE_OTHER)
+    
+    # Require description for new service per requirements
+    if not description or description.strip() == "":
+        return RedirectResponse(url="/admin/dashboard?error=Service%20Must%20Have%20Description", status_code=status.HTTP_303_SEE_OTHER)
+
+    file_location = f"static/images/{image.filename}"
+    with open(file_location, "wb+") as file_object:
+        shutil.copyfileobj(image.file, file_object)
+    
+    conn = get_db_connection()
+    conn.execute("INSERT INTO services (page, name, description, image_path) VALUES (?, ?, ?, ?)", 
+                 ('specialized-maintenance', name, description, f"/static/images/{image.filename}"))
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/delete_service")
+async def delete_service(request: Request, id: int = Form(...)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    conn = get_db_connection()
+    conn.execute("DELETE FROM services WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/add_sub_service")
+async def add_sub_service(request: Request, service_id: int = Form(...), name: str = Form(...), description: str = Form(None)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    # Require description
+    if not description or description.strip() == "":
+        return RedirectResponse(url="/admin/dashboard?error=Sub-Service%20Must%20Have%20Description", status_code=status.HTTP_303_SEE_OTHER)
+
+    conn = get_db_connection()
+    conn.execute("INSERT INTO sub_services (service_id, name, description) VALUES (?, ?, ?)", 
+                 (service_id, name, description))
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/delete_sub_service")
+async def delete_sub_service(request: Request, id: int = Form(...)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    conn = get_db_connection()
+    conn.execute("DELETE FROM sub_services WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/add_sub_service_images")
+async def add_sub_service_images(request: Request, sub_service_id: int = Form(...), images: List[UploadFile] = File(...)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    conn = get_db_connection()
+    
+    # Check current count
+    current_count = conn.execute("SELECT COUNT(*) FROM sub_service_images WHERE sub_service_id = ?", (sub_service_id,)).fetchone()[0]
+    
+    # Filter empty files
+    valid_images = [img for img in images if img.filename]
+    
+    if len(valid_images) == 0:
+         conn.close()
+         return RedirectResponse(url="/admin/dashboard?error=Must%20upload%20at%20least%20one%20image", status_code=status.HTTP_303_SEE_OTHER)
+
+    if current_count + len(valid_images) > 5:
+        conn.close()
+        return RedirectResponse(url="/admin/dashboard?error=Limit%20Reached%20(Max%205%20Images%20per%20Sub-Service)", status_code=status.HTTP_303_SEE_OTHER)
+
+    for image in valid_images:
+        file_location = f"static/images/{image.filename}"
+        with open(file_location, "wb+") as file_object:
+            shutil.copyfileobj(image.file, file_object)
+        
+        conn.execute("INSERT INTO sub_service_images (sub_service_id, image_path) VALUES (?, ?)", 
+                     (sub_service_id, f"/static/images/{image.filename}"))
+    
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
+@app.post("/admin/delete_sub_service_image")
+async def delete_sub_service_image(request: Request, id: int = Form(...)):
+    user = request.cookies.get("admin_session")
+    if not user: raise HTTPException(status_code=401)
+    
+    conn = get_db_connection()
+    conn.execute("DELETE FROM sub_service_images WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+    return RedirectResponse(url="/admin/dashboard", status_code=status.HTTP_303_SEE_OTHER)
+
 
 
 if __name__ == "__main__":

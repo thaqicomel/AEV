@@ -314,7 +314,17 @@
                     <ul class="carousel-track">
                         {% for image in team_slideshow %}
                         <li class="carousel-slide {% if loop.first %}active{% endif %}">
-                            <img src="{{ image.image_path }}" alt="Team Slideshow">
+                            <img src="{{ image.image_path }}" alt="{{ image.title or 'Team Slideshow' }}">
+                            {% if image.title or image.description %}
+                            <div class="carousel-caption">
+                                {% if image.title %}
+                                <h3>{{ image.title }}</h3>
+                                {% endif %}
+                                {% if image.description %}
+                                <p>{{ image.description }}</p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </li>
                         {% endfor %}
                     </ul>
